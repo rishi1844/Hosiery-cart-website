@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arpan Kart</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="shortcut icon" href="/img/Favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <style>
+        #page-header {
+            position: relative;
+            /* Ensures the pseudo-element aligns with this container */
+            background-image: url('/img/cart2.webp');
+            width: 100%;
+            height: 35vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        #page-header::before {
+            content: "";
+            /* Adds an empty pseudo-element */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Black overlay with 40% opacity */
+            z-index: 1;
+            /* Ensures the overlay stays below the content */
+        }
+
+        #page-header * {
+            position: relative;
+            /* Ensures content appears above the dark overlay */
+            z-index: 2;
+        }
+
+        #page-header h2,
+        #page-header p {
+            color: white;
+            /* Black text color */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.6);
+            /* White glow effect */
+            font-weight: bold;
+            margin: 0;
+            z-index: 2;
+            /* Ensures text appears above any background layers */
+        }
+    </style>
+</head>
+
+<body>
+    <section id="header">
+        <a href="#"><img src="/img/logo.png" class="logo" alt="" onclick="window.location.href='index.html';"></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/shop.html">Shop</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/about.html">About</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li id="lg-bag"><a class="active"><i class="far fa-shopping-bag"></i></a></li>
+                <a href="#" id="close"><i class="far fa-times"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a id="hh" href=""><i class="far fa-shopping-bag"></i></a>
+            <i id="bar" class="fas fa-outdent"></i>
+        </div>
+    </section>
+
+    <section id="page-header">
+        <h2>#stayhome</h2>
+        <p>Save more with coupons & up to 17% OFF!</p>
+    </section>
+
+    <section id="cart" class="section-p1">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Subtotal</td>
+                </tr>
+            </thead>
+            <tbody id="cart-items">
+                <!-- Items will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </section>
+
+
+    <section id="cart-add" class="section-p1">
+        <div id="Subtotal">
+            <h3>Cart Totals</h3>
+            <table>
+                <tr>
+                    <td>Cart Subtotal</td>
+                    <td id="cart-subtotal">$0.00</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td id="cart-total"><strong>$0.00</strong></td>
+                </tr>
+            </table>
+            <button class="normal" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="/img/logo.png" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address: </strong>GBP crest, near toll plaza, kharar(140301), Mohali, Punjab</p>
+            <p><strong>Phone:</strong> +01 2222 567 / (+91) 01 2345 789</p>
+            <div class="follow">
+                <h4>Follow</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-linkedin"></i>
+                    <i class="fab fa-github"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Accounts</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App store or Google Play </p>
+            <div class="row">
+                <img src="/img/pay/app.jpg" alt="">
+                <img src="/img/pay/play.jpg" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="/img/pay/pay.png" alt="">
+        </div>
+
+        <div class="copyright">
+            <p>&copy 2023, Arpan cart - HTML CSS and javaScript</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
+
+
+<!-- 
+<section id="cart" class="section-p1">
+    <table width="100%">
+        <thead>
+            <tr>
+                <td>Remove</td>
+                <td>Image</td>
+                <td>Product</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Subtotal</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#"><i class="far fa-times-circle"></i></a></td>
+                <td><img src="img/products/f1.jpg" alt=""></td>
+                <td>Cartoon Astronut T-shirt</td>
+                <td>$8.0</td>
+                <td><input type="number" value="1"></td>
+                <td>$8.0</td>
+            </tr>
+        </tbody>
+    </table>
+</section> -->
