@@ -152,18 +152,33 @@ const products = {
 }; 
 
 
+const product = products[productId];
 
-if (productId && products[productId]) {
-    const product = products[productId];
-
+if (product) {
     document.getElementById("MainImg").src = product.images[0];
+
+    const smallImgGrp = document.getElementById("SmallImages");
+    product.images.forEach((imgSrc) => {
+        const imgCol = document.createElement("div");
+        imgCol.classList.add("small-img-col");
+        imgCol.innerHTML = `<img src="${imgSrc}" width="100%" class="small-img" alt="Product Image">`;
+        smallImgGrp.appendChild(imgCol);
+    });
+
+    const smallImgs = document.querySelectorAll(".small-img");
+    smallImgs.forEach((img, index) => {
+        img.addEventListener("click", () => {
+            document.getElementById("MainImg").src = product.images[index];
+        });
+    });
+
     document.getElementById("product-category").innerText = `Home / ${product.category}`;
     document.getElementById("product-name").innerText = product.name;
     document.getElementById("product-price").innerText = product.price;
     document.getElementById("product-description").innerText = product.description;
 
     const sizeDropdown = document.getElementById("product-sizes");
-    product.sizes.forEach(size => {
+    product.sizes.forEach((size) => {
         const option = document.createElement("option");
         option.value = size;
         option.innerText = size;
@@ -171,71 +186,93 @@ if (productId && products[productId]) {
     });
 
     document.getElementById("addToCart").addEventListener("click", () => {
-        const quantity = parseInt(document.getElementById("quantity-input").value) || 1;
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        const existingIndex = cart.findIndex(item => item.id === productId);
-        if (existingIndex !== -1) {
-            cart[existingIndex].quantity += quantity;
-        } else {
-            cart.push({
-                id: productId,
-                name: product.name,
-                price: parseFloat(product.price.slice(1)), // Remove `$`
-                image: product.images[0],
-                quantity
-            });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-        alert(`${product.name} added to the cart!`);
+        addToCart(product);
     });
+} else {
+    document.getElementById("prodetails").innerHTML = "<h2>Product not found.</h2>";
 }
 
-// Populate cart page
-if (document.getElementById("cart-items")) {
-    function updateCart() {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const cartItems = document.getElementById("cart-items");
-        const cartSubtotal = document.getElementById("cart-subtotal");
-        const cartTotal = document.getElementById("cart-total");
+// Cart array stored in localStorage
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        cartItems.innerHTML = "";
-        let subtotal = 0;
+// Function to handle Add to Cart
+function addToCart(product) {
+    const quantityInput = document.querySelector("input[type='number']");
+    const quantity = parseInt(quantityInput?.value || 1);
 
-        cart.forEach((item, index) => {
-            const itemSubtotal = item.price * item.quantity;
-            subtotal += itemSubtotal;
+    // Check if product is already in the cart
+    const existingProductIndex = cart.findIndex((item) => item.name === product.name);
 
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td><button onclick="removeItem(${index})">Remove</button></td>
-                <td><img src="${item.image}" alt="${item.name}" style="width: 50px;"></td>
-                <td>${item.name}</td>
-                <td>$${item.price.toFixed(2)}</td>
-                <td><input type="number" value="${item.quantity}" onchange="updateQuantity(${index}, this.value)"></td>
-                <td>$${itemSubtotal.toFixed(2)}</td>
-            `;
-            cartItems.appendChild(row);
+    if (existingProductIndex !== -1) {
+        // Update quantity if product exists
+        cart[existingProductIndex].quantity += quantity;
+    } else {
+        // Add new product to cart
+        cart.push({
+            ...product,
+            quantity: quantity
         });
-
-        cartSubtotal.innerText = `$${subtotal.toFixed(2)}`;
-        cartTotal.innerText = `$${subtotal.toFixed(2)}`;
     }
 
-    function updateQuantity(index, newQuantity) {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart[index].quantity = parseInt(newQuantity);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCart();
-    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${product.name} added to the cart.`);
+    updateCart();
+}
 
-    function removeItem(index) {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.splice(index, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCart();
-    }
+// Function to update the cart UI
+function updateCart() {
+    const cartItems = document.getElementById("cart-items");
+    const cartSubtotal = document.getElementById("cart-subtotal");
+    const cartTotal = document.getElementById("cart-total");
 
+    cartItems.innerHTML = ""; // Clear existing cart items
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+        const itemSubtotal = parseFloat(item.price.slice(1)) * item.quantity;
+        subtotal += itemSubtotal;
+
+        // Create table row for each cart item
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><button onclick="removeItem(${index})">Remove</button></td>
+            <td><img src="${item.images[0]}" alt="${item.name}" width="50"></td>
+            <td>${item.name}</td>
+            <td>$${parseFloat(item.price.slice(1)).toFixed(2)}</td>
+            <td>
+                <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+            </td>
+            <td>$${itemSubtotal.toFixed(2)}</td>
+        `;
+        cartItems.appendChild(row);
+    });
+
+    // Update subtotal and total
+    cartSubtotal.innerText = `$${subtotal.toFixed(2)}`;
+    cartTotal.innerText = `$${subtotal.toFixed(2)}`;
+}
+
+// Function to update quantity of an item
+function updateQuantity(index, newQuantity) {
+    cart[index].quantity = parseInt(newQuantity);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+}
+
+// Function to remove an item from the cart
+function removeItem(index) {
+    cart.splice(index, 1); // Remove item from the cart array
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+}
+
+// Initialize cart update if on cart page
+if (document.getElementById("cart-items")) {
     document.addEventListener("DOMContentLoaded", updateCart);
+}
+
+// Checkout function (Optional)
+function checkout() {
+    alert("Proceeding to checkout...");
+    // Implement further checkout logic here
 }
